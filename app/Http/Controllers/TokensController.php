@@ -17,6 +17,7 @@ class TokensController extends Controller
      */
     public function login(Request $request) {
         $credentials = $request->only('email','password');
+
         $validator = Validator::make($credentials, [
             'email' => 'required|email',
             'password' => 'required'
@@ -54,6 +55,7 @@ class TokensController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
 
+
     public function refreshToken() {
         $token = JWTAuth::getToken();
         try {
@@ -77,6 +79,24 @@ class TokensController extends Controller
         }
     }
 
+
+    public function logout() {
+        //54.06 sec
+        $token = JWTAuth::getToken();
+
+        try {
+            $token = JWTAuth::invalidate($token);
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout successfully'
+            ],200);
+        }catch (JWTException $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed Logout,please try again'
+            ],422);
+        }
+    }
     /**
      * Display a listing of the resource.
      *
