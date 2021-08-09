@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::group(['middleware' => ['jwt.auth'], 'prefix' => 'v1'], function () {
-    Route::resource('dnis',AdminController::class);
+    Route::resource('movies',\App\Http\Controllers\MovieController::class);
 });
 
 //  api/v1/auth/login

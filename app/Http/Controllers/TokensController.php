@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Validator;
 use Illuminate\Http\Request;
@@ -57,25 +60,24 @@ class TokensController extends Controller
 
 
     public function refreshToken() {
+
         $token = JWTAuth::getToken();
         try {
             $token = JWTAuth::refresh($token);
             return response()->json([
                 'success' => true,
-                'message' => 'OK',
-                'token' => $token,
-            ], 200);
-        } catch (TokenExpiredException $ex){
+                'token' => $token], 200);
+        }
+        catch (TokenExpiredException $ex) {
             return response()->json([
                 'success' => false,
                 'message' => 'Token expirado',
             ], 422);
-        } catch (TokenBlacklistedException $ex){
-            return response()->json([
-                'success' => false,
-                'message' => 'Need to login again please (black listed
-                )',
-            ], 422);
+        } catch (TokenBlacklistedException $ex) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Need to login again please (black listed)'
+                ], 422);
         }
     }
 
@@ -85,7 +87,7 @@ class TokensController extends Controller
         $token = JWTAuth::getToken();
 
         try {
-            $token = JWTAuth::invalidate($token);
+           JWTAuth::invalidate($token);
             return response()->json([
                 'success' => true,
                 'message' => 'Logout successfully'
